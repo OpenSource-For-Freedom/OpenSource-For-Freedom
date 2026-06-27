@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="OpenSource For Freedom — DevSecOps and Threat Hunting">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#05060a"/>
+      <stop offset="0.62" stop-color="#0a0612"/>
+      <stop offset="0.66" stop-color="#1a0830"/>
+      <stop offset="1" stop-color="#05060a"/>
+    </linearGradient>
+    <radialGradient id="horizonGlow" cx="0.5" cy="0.66" r="0.6">
+      <stop offset="0" stop-color="#ff2d7e" stop-opacity="0.55"/>
+      <stop offset="0.35" stop-color="#7b2dff" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#7b2dff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="scan" width="3" height="3" patternUnits="userSpaceOnUse">
+      <rect width="3" height="1" y="0" fill="#0af" fill-opacity="0.05"/>
+    </pattern>
+    <linearGradient id="spine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#00eaff"/>
+      <stop offset="1" stop-color="#ff2d7e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- backdrop -->
+  <rect width="1280" height="320" fill="url(#sky)"/>
+  <ellipse cx="640" cy="211" rx="520" ry="150" fill="url(#horizonGlow)"/>
+
+  <!-- synthwave perspective floor -->
+  <g stroke="#00eaff" stroke-opacity="0.32">
+    <!-- horizontal sweeps, spacing widens toward the viewer -->
+    <line x1="0" y1="211" x2="1280" y2="211" stroke="#ff2d7e" stroke-opacity="0.7"/>
+    <line x1="0" y1="219" x2="1280" y2="219"/>
+    <line x1="0" y1="230" x2="1280" y2="230"/>
+    <line x1="0" y1="245" x2="1280" y2="245"/>
+    <line x1="0" y1="266" x2="1280" y2="266"/>
+    <line x1="0" y1="293" x2="1280" y2="293"/>
+    <line x1="0" y1="320" x2="1280" y2="320"/>
+  </g>
+  <g stroke="#00eaff" stroke-opacity="0.22">
+    <!-- vertical lines fanning from the vanishing point (640,211) to the bottom edge -->
+    <line x1="640" y1="211" x2="640" y2="320"/>
+    <line x1="640" y1="211" x2="560" y2="320"/>
+    <line x1="640" y1="211" x2="470" y2="320"/>
+    <line x1="640" y1="211" x2="360" y2="320"/>
+    <line x1="640" y1="211" x2="215" y2="320"/>
+    <line x1="640" y1="211" x2="20" y2="320"/>
+    <line x1="640" y1="211" x2="720" y2="320"/>
+    <line x1="640" y1="211" x2="810" y2="320"/>
+    <line x1="640" y1="211" x2="920" y2="320"/>
+    <line x1="640" y1="211" x2="1065" y2="320"/>
+    <line x1="640" y1="211" x2="1260" y2="320"/>
+  </g>
+
+  <!-- scanline overlay -->
+  <rect width="1280" height="320" fill="url(#scan)"/>
+
+  <!-- neon spine -->
+  <rect x="0" y="0" width="6" height="320" fill="url(#spine)"/>
+
+  <!-- corner framing brackets -->
+  <g stroke="#00eaff" stroke-width="2" fill="none" stroke-opacity="0.8">
+    <path d="M40 26 h26 M40 26 v26"/>
+    <path d="M1240 26 h-26 M1240 26 v26"/>
+    <path d="M40 294 h26 M40 294 v-26"/>
+    <path d="M1240 294 h-26 M1240 294 v-26"/>
+  </g>
+
+  <!-- HUD metadata -->
+  <g font-family="'Consolas','SF Mono',monospace" font-size="13" fill="#5fd9ff" fill-opacity="0.85" letter-spacing="1">
+    <text x="58" y="46">SEC-OPS//TERMINAL v2.6</text>
+    <text x="1222" y="46" text-anchor="end">STATUS: <tspan fill="#ff2d7e">HUNTING</tspan></text>
+    <text x="1222" y="286" text-anchor="end">// no vendor. no cloud. no leash.</text>
+  </g>
+
+  <!-- RGB-split glitch wordmark -->
+  <g font-family="'Consolas','SF Mono',monospace" font-weight="700" font-size="64" letter-spacing="2">
+    <text x="61" y="150" fill="#ff2d7e" fill-opacity="0.9">OPENSOURCE<tspan fill="#ff2d7e">//</tspan>FREEDOM</text>
+    <text x="55" y="146" fill="#00eaff" fill-opacity="0.9">OPENSOURCE<tspan fill="#00eaff">//</tspan>FREEDOM</text>
+    <text x="58" y="148" fill="#eafcff">OPENSOURCE<tspan fill="#9b6bff">//</tspan>FREEDOM</text>
+  </g>
+
+  <!-- terminal subtitle with cursor -->
+  <g font-family="'Consolas','SF Mono',monospace" font-size="22" letter-spacing="1">
+    <text x="60" y="190" fill="#7bf0ff"><tspan fill="#ff2d7e">root@redteam</tspan>:<tspan fill="#9b6bff">~</tspan>$ ./hunt --target enemy --scope code</text>
+    <rect x="640" y="174" width="11" height="20" fill="#00eaff"/>
+  </g>
+
+  <!-- tag chips -->
+  <g font-family="'Consolas','SF Mono',monospace" font-size="14" letter-spacing="1.5">
+    <g fill="none" stroke="#00eaff" stroke-opacity="0.6">
+      <rect x="60" y="246" width="118" height="28" rx="2"/>
+      <rect x="188" y="246" width="148" height="28" rx="2"/>
+      <rect x="346" y="246" width="100" height="28" rx="2"/>
+      <rect x="456" y="246" width="140" height="28" rx="2"/>
+    </g>
+    <g fill="#9becff">
+      <text x="119" y="265" text-anchor="middle">DEVSECOPS</text>
+      <text x="262" y="265" text-anchor="middle">THREAT-HUNTING</text>
+      <text x="396" y="265" text-anchor="middle">DFIR</text>
+      <text x="526" y="265" text-anchor="middle">SUPPLY-CHAIN</text>
+    </g>
+  </g>
+
+  <!-- faux barcode + id, bottom right -->
+  <g transform="translate(1060,250)" fill="#9becff" fill-opacity="0.85">
+    <rect x="0" y="0" width="2" height="22"/><rect x="4" y="0" width="1" height="22"/>
+    <rect x="7" y="0" width="3" height="22"/><rect x="12" y="0" width="1" height="22"/>
+    <rect x="15" y="0" width="2" height="22"/><rect x="19" y="0" width="4" height="22"/>
+    <rect x="25" y="0" width="1" height="22"/><rect x="28" y="0" width="2" height="22"/>
+    <rect x="32" y="0" width="3" height="22"/><rect x="37" y="0" width="1" height="22"/>
+    <rect x="40" y="0" width="2" height="22"/><rect x="44" y="0" width="1" height="22"/>
+    <rect x="47" y="0" width="3" height="22"/><rect x="52" y="0" width="2" height="22"/>
+    <rect x="56" y="0" width="1" height="22"/><rect x="59" y="0" width="4" height="22"/>
+    <rect x="65" y="0" width="1" height="22"/><rect x="68" y="0" width="2" height="22"/>
+    <text x="0" y="34" font-family="'Consolas','SF Mono',monospace" font-size="11" letter-spacing="2">USMC // LEO // SEC</text>
+  </g>
+</svg>
