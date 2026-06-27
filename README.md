@@ -14,13 +14,9 @@
 
 <br/>
 
-<a href="https://www.linkedin.com/in/tburns-offsec-specialist/">
-  <img src="https://img.shields.io/badge/LinkedIn-tburns--offsec--specialist-05060a?style=for-the-badge&logo=linkedin&logoColor=00eaff" alt="LinkedIn"/>
-</a>
-<img src="https://komarev.com/ghpvc/?username=OpenSource-For-Freedom&color=ff2d7e&style=for-the-badge&label=PROFILE+VIEWS" alt="profile views"/>
-<a href="https://github.com/OpenSource-For-Freedom?tab=followers">
-  <img src="https://img.shields.io/github/followers/OpenSource-For-Freedom?style=for-the-badge&logo=github&color=7b2dff&labelColor=05060a&label=FOLLOWERS" alt="followers"/>
-</a>
+<a href="https://www.linkedin.com/in/tburns-offsec-specialist/"><img src="https://img.shields.io/badge/LINKEDIN-tburns--offsec--specialist-0a2540?style=for-the-badge&logo=linkedin&logoColor=38bdf8&labelColor=04070f" alt="LinkedIn"/></a>
+<img src="https://img.shields.io/badge/BLUE_TEAM-THREAT_HUNTER-1f6feb?style=for-the-badge&labelColor=04070f" alt="Blue Team Threat Hunter"/>
+<img src="https://komarev.com/ghpvc/?username=OpenSource-For-Freedom&color=1f6feb&style=for-the-badge&label=PROFILE+VIEWS&labelColor=04070f" alt="profile views"/>
 
 </div>
 
@@ -34,21 +30,21 @@ Everything here is original and end-to-end, from low-level Rust and eBPF runtime
 
 ## `// T00ls`
 
-![Rust](https://img.shields.io/badge/RUST-05060a?style=for-the-badge&logo=rust&logoColor=00eaff)
-![Python](https://img.shields.io/badge/PYTHON-05060a?style=for-the-badge&logo=python&logoColor=ff2d7e)
-![.NET](https://img.shields.io/badge/.NET_8-05060a?style=for-the-badge&logo=dotnet&logoColor=7b2dff)
-![eBPF](https://img.shields.io/badge/eBPF-05060a?style=for-the-badge&logo=linux&logoColor=00eaff)
-![YARA](https://img.shields.io/badge/YARA-05060a?style=for-the-badge&logo=virustotal&logoColor=ff2d7e)
-![SQLite](https://img.shields.io/badge/SQLITE-05060a?style=for-the-badge&logo=sqlite&logoColor=00eaff)
-![GitHub Actions](https://img.shields.io/badge/GH_ACTIONS-05060a?style=for-the-badge&logo=githubactions&logoColor=7b2dff)
-![Linux](https://img.shields.io/badge/LINUX-05060a?style=for-the-badge&logo=linux&logoColor=00eaff)
+<div align="center">
+
+![Rust](https://img.shields.io/badge/RUST-05060a?style=for-the-badge&logo=rust&logoColor=38bdf8)
+![Python](https://img.shields.io/badge/PYTHON-05060a?style=for-the-badge&logo=python&logoColor=38bdf8)
+![.NET](https://img.shields.io/badge/.NET_8-05060a?style=for-the-badge&logo=dotnet&logoColor=38bdf8)
+![eBPF](https://img.shields.io/badge/eBPF-05060a?style=for-the-badge&logo=linux&logoColor=38bdf8)
+![YARA](https://img.shields.io/badge/YARA-05060a?style=for-the-badge&logo=virustotal&logoColor=38bdf8)
+![SQLite](https://img.shields.io/badge/SQLITE-05060a?style=for-the-badge&logo=sqlite&logoColor=38bdf8)
+![GitHub Actions](https://img.shields.io/badge/GH_ACTIONS-05060a?style=for-the-badge&logo=githubactions&logoColor=38bdf8)
+![Linux](https://img.shields.io/badge/LINUX-05060a?style=for-the-badge&logo=linux&logoColor=38bdf8)
+
+</div>
 
 <div align="center">
 
-<img src="https://github-profile-trophy.vercel.app/?username=OpenSource-For-Freedom&theme=matrix&no-frame=true&no-bg=true&column=7&margin-w=4&margin-h=4" alt="trophies"/>
-
-<br/>
-
-<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=OpenSource-For-Freedom&layout=compact&hide_border=true&bg_color=05060a&title_color=00eaff&text_color=9becff&hide=html" alt="top languages"/>
+<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=OpenSource-For-Freedom&layout=compact&hide_border=true&bg_color=05060a&title_color=38bdf8&text_color=bae6fd&hide=html" alt="top languages"/>
 
 </div>
