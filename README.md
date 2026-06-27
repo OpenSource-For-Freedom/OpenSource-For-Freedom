@@ -24,7 +24,7 @@
 
 US Marine. Former law-enforcement gang investigator. Now a DevOps security professional. Same mission, new battlefield. I've spent my career hunting the enemy: first in uniform, then on the streets, and now in code. The discipline never changes. Find the threat, learn how it operates, shut it down.
 
-Today I build and ship security engineering across the full DevSecOps lifecycle: hardened CI/CD, supply-chain defense, runtime threat detection, and incident response. Shift-left in the pipeline, watch hard at runtime, and run the investigation when something slips through. Detection, forensics, and threat intel built to run on **your** infrastructure with no cloud dependency and no vendor leash.
+Today I build and ship security engineering across the full DevSecOps lifecycle: hardened CI/CD, supply-chain defense, runtime threat detection, and incident response. Shift-left in the pipeline, watch in detail at runtime, and run the investigation when something slips through. Detection, forensics, and threat intel built to run on **your** infrastructure with no cloud dependency and no vendor leash.
 
 Everything here is original and end-to-end, from low-level Rust and eBPF runtime internals to local AI analysts that explain a finding in plain language. The throughline is **open source for freedom**: real security capability that isn't locked behind a paywall.
 
