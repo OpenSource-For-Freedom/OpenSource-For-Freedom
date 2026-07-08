@@ -45,6 +45,4 @@ Everything here is original and end-to-end, from low-level Rust and eBPF runtime
 
 <div align="center">
 
-<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=OpenSource-For-Freedom&layout=compact&hide_border=true&bg_color=05060a&title_color=38bdf8&text_color=bae6fd&hide=html" alt="top languages"/>
-
 </div>
