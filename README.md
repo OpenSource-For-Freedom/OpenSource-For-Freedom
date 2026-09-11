@@ -6,8 +6,6 @@
 
 <div align="center">
 
-<img src="./assets/banner.svg" width="100%" alt="OpenSource For Freedom — DevSecOps & Threat Hunting"/>
-
 <br/>
 
 <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=900&color=00EAFF&center=true&vCenter=true&width=820&height=45&lines=DevSecOps+%2F%2F+Threat+Hunting+%2F%2F+DFIR;Marine+Vet+%2F%2F+ex-Gang+Investigator+%2F%2F+Security+Engineer;No+cloud.+No+vendor.+No+leash." alt="typing tagline"/>
