@@ -23,8 +23,6 @@
 
 Marine, then gang investigator, now DevOps security. I work on CI/CD, supply chain and runtime detection, and I hunt CVEs in open-source packages.
 
-Everything here runs on your own hardware and is free to use.
-
 ## `// research`
 
 I hunt vulnerabilities and malicious code in the open-source supply chain, then get them fixed. My own pipeline watches **npm, PyPI, RubyGems, crates.io, Packagist and Go** as new releases ship. Each artifact is unpacked in a rootless, network-less container and never executed. Taint-tracking rules and dependency scanners run over it, and the results are deduplicated against OSV, GitHub Advisories, NVD and Red Hat. Every candidate is then validated by hand against the shipped code before it goes into a static CVE ledger. Most automated hits are noise; the job is proving which ones aren't.
