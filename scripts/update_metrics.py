@@ -1,4 +1,4 @@
-"""Refresh metrics.json and the table in METRICS.md.
+"""Refresh metrics.json, the table in METRICS.md and the README badges.
 
 Repo and container counts are read from the public git_warden and KNORR
 READMEs. cves_reported is edited by hand in metrics.json when a report is sent.
@@ -48,6 +48,18 @@ def main():
         "",
         f"_Updated {metrics['updated']}_",
     ])
+    badge = ("[![{label}](https://img.shields.io/badge/{label}-{value}-{color}"
+             "?style=for-the-badge&labelColor=04070f)](METRICS.md)")
+    badges = "\n".join([
+        badge.format(label="CVEs_REPORTED", value=metrics["cves_reported"], color="e11d48"),
+        badge.format(label="MALICIOUS_REPOS_CONFIRMED", value=metrics["repos_confirmed"], color="1f6feb"),
+        badge.format(label="MALICIOUS_CONTAINERS_CONFIRMED", value=metrics["containers_confirmed"], color="1f6feb"),
+    ])
+    readme = ROOT / "README.md"
+    readme.write_text(re.sub(
+        r"(<!-- metrics-badges:start -->\n).*?(<!-- metrics-badges:end -->)",
+        lambda m: m.group(1) + badges + "\n" + m.group(2), readme.read_text(), flags=re.S))
+
     page = ROOT / "METRICS.md"
     text = page.read_text()
     text = re.sub(r"(<!-- metrics:start -->\n).*?(<!-- metrics:end -->)",
