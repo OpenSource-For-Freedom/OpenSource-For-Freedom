@@ -21,11 +21,9 @@
 
 ## `// whoami`
 
-I'm Tim. I served in the Marine Corps, spent years as a gang investigator in law enforcement, and now work in DevOps security. The jobs look different on paper, but the work has always been similar: figure out how something is actually happening, then make it stop.
+Marine, then gang investigator, now DevOps security. I work on CI/CD, supply chain and runtime detection, and I hunt CVEs in open-source packages.
 
-Most of my time goes into CI/CD hardening, supply-chain security, runtime detection and incident response. I prefer tools I can run on my own hardware, so most of what's here works without a cloud account or a vendor license.
-
-Everything in these repos is my own work, from Rust and eBPF runtime code to local AI helpers that explain a finding in plain English. I share it because I think good security tooling shouldn't sit behind a paywall.
+Everything here runs on your own hardware and is free to use.
 
 ## `// research`
 
