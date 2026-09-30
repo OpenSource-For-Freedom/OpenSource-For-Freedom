@@ -8,7 +8,7 @@
 
 <br/>
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=900&color=00EAFF&center=true&vCenter=true&width=820&height=45&lines=DevSecOps+%2F%2F+Threat+Hunting+%2F%2F+DFIR;CVE+Hunter+%2F%2F+Coordinated+Disclosure;Malicious+Code+%2F%2F+Containers+%2F%2F+Signatures;Marine+Vet+%2F%2F+ex-Gang+Investigator+%2F%2F+Security+Engineer;No+cloud.+No+vendor.+No+leash." alt="typing tagline"/>
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=900&color=00EAFF&center=true&vCenter=true&width=820&height=45&lines=DevSecOps+%2F%2F+Threat+Hunting+%2F%2F+DFIR;CVE+Hunter+%2F%2F+Coordinated+Disclosure;Malicious+Code+%2F%2F+Containers+%2F%2F+Signatures;Marine+Vet+%2F%2F+ex-Gang+Investigator;No+cloud.+No+vendor.+No+leash." alt="typing tagline"/>
 
 <br/>
 
@@ -21,11 +21,11 @@
 
 ## `// whoami`
 
-US Marine. Former law-enforcement gang investigator. Now a DevOps security professional. Same mission, new battlefield. I've spent my career hunting the enemy: first in uniform, then on the streets, and now in code. The discipline never changes. Find the threat, learn how it operates, shut it down.
+I'm Tim. I served in the Marine Corps, spent years as a gang investigator in law enforcement, and now work in DevOps security. The jobs look different on paper, but the work has always been similar: figure out how something is actually happening, then make it stop.
 
-Today I build and ship security engineering across the full DevSecOps lifecycle: hardened CI/CD, supply-chain defense, runtime threat detection, and incident response. Shift-left in the pipeline, watch in detail at runtime, and run the investigation when something slips through. Detection, forensics, and threat intel built to run on **your** infrastructure with no cloud dependency and no vendor leash.
+Most of my time goes into CI/CD hardening, supply-chain security, runtime detection and incident response. I prefer tools I can run on my own hardware, so most of what's here works without a cloud account or a vendor license.
 
-Everything here is original and end-to-end, from low-level Rust and eBPF runtime internals to local AI analysts that explain a finding in plain language. The throughline is **open source for freedom**: real security capability that isn't locked behind a paywall.
+Everything in these repos is my own work, from Rust and eBPF runtime code to local AI helpers that explain a finding in plain English. I share it because I think good security tooling shouldn't sit behind a paywall.
 
 ## `// research`
 
