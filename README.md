@@ -34,7 +34,13 @@ I hunt vulnerabilities and malicious code in the open-source supply chain, then 
 
 > **Disclosure policy:** private report first, 90 days or a fixed release (whichever comes first), then public. Published advisories will be listed here as they go live.
 
-📊 **[Metrics](METRICS.md):** CVEs reported, malicious repositories and container images confirmed. Updated daily.
+<div align="center">
+
+<!-- metrics-badges:start -->
+<a href="METRICS.md"><img src="assets/metrics.svg" alt="Threat Hunting Board of Truth" width="100%"/></a>
+<!-- metrics-badges:end -->
+
+</div>
 
 ## `// T00ls`
 
