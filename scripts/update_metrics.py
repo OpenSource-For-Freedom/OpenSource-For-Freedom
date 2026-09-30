@@ -7,6 +7,7 @@ READMEs. cves_reported is edited by hand in metrics.json when a report is sent.
 import datetime
 import json
 import pathlib
+import random
 import re
 import urllib.request
 
@@ -28,64 +29,102 @@ def fetch_count(repo, pattern):
 STATS = (
     ("cves_reported", "CVEs REPORTED", "to maintainers", "#ff2d7e"),
     ("repos_confirmed", "MALICIOUS REPOS", "confirmed", "#00eaff"),
-    ("containers_confirmed", "MALICIOUS CONTAINERS", "confirmed", "#7b2dff"),
+    ("containers_confirmed", "MALICIOUS CONTAINERS", "confirmed", "#a66bff"),
 )
+FONT = "'Consolas','SF Mono','Fira Code',monospace"
+W, H = 1280, 320
+INSET = 20          # corner brackets sit this far in from every edge
+MARGIN = 64         # panels sit this far in from the left and right edges
+GAP = 24
+PANEL_W = (W - 2 * MARGIN - 2 * GAP) // 3
+PANEL_Y, PANEL_H = 100, 144
+
+
+def _bracket(x, y, dx, dy, size):
+    return f'<path d="M{x} {y} h{dx * size} M{x} {y} v{dy * size}"/>'
+
+
+def _corners(x, y, w, h, size):
+    return "".join([
+        _bracket(x, y, 1, 1, size), _bracket(x + w, y, -1, 1, size),
+        _bracket(x, y + h, 1, -1, size), _bracket(x + w, y + h, -1, -1, size),
+    ])
+
+
+def _matrix_rain():
+    """Columns of falling 1s and 0s. Seeded, so the file only changes with the counts."""
+    rng = random.Random(1010101)
+    step, line = 20, 18
+    rows = H // line + 2
+    cols = []
+    for x in range(10, W, step):
+        digits = "".join(rng.choice("01") for _ in range(rows))
+        tspans = "".join(f'<tspan x="{x}" dy="{line}">{d}</tspan>' for d in digits)
+        dur = rng.uniform(6, 14)
+        style = f'animation-duration:{dur:.1f}s;animation-delay:{-rng.uniform(0, dur):.1f}s'
+        op = rng.choice((0.10, 0.14, 0.18, 0.24))
+        # Two stacked copies make the loop seamless.
+        for y in (0, -rows * line):
+            cols.append(f'<text class="rain" style="{style}" fill-opacity="{op}" y="{y}">{tspans}</text>')
+    return "".join(cols), rows * line
 
 
 def render_svg(metrics):
-    """The Board of Truth card, drawn in the same style as assets/banner.svg."""
-    w, h = 1280, 300
-    font = "'Consolas','SF Mono','Fira Code',monospace"
+    """The Board of Truth card: matrix rain, symmetric frame, three equal panels."""
+    rain, loop = _matrix_rain()
     panels = []
     for i, (key, label, sub, color) in enumerate(STATS):
-        x = 64 + i * 392
+        x = MARGIN + i * (PANEL_W + GAP)
+        cx = PANEL_W // 2
         panels.append(f"""
-  <g transform="translate({x},96)">
-    <rect width="368" height="150" rx="10" fill="#050c1c" fill-opacity="0.85" stroke="{color}" stroke-opacity="0.55"/>
-    <rect width="4" height="150" rx="2" fill="{color}"/>
-    <text x="28" y="40" font-family="{font}" font-size="15" letter-spacing="3" fill="{color}">{label}</text>
-    <text x="28" y="108" font-family="{font}" font-size="64" font-weight="700" fill="#e6f7ff">{metrics[key]}</text>
-    <text x="28" y="134" font-family="{font}" font-size="13" letter-spacing="2" fill="#5fd9ff" fill-opacity="0.7">{sub}</text>
+  <g transform="translate({x},{PANEL_Y})">
+    <rect width="{PANEL_W}" height="{PANEL_H}" rx="6" fill="#03060d" fill-opacity="0.88" stroke="{color}" stroke-opacity="0.45"/>
+    <g stroke="{color}" stroke-width="2" fill="none">{_corners(0, 0, PANEL_W, PANEL_H, 12)}</g>
+    <text x="{cx}" y="36" text-anchor="middle" font-family="{FONT}" font-size="14" letter-spacing="3" fill="{color}">{label}</text>
+    <text x="{cx}" y="98" text-anchor="middle" font-family="{FONT}" font-size="58" font-weight="700" fill="#e6f7ff">{metrics[key]}</text>
+    <text x="{cx}" y="124" text-anchor="middle" font-family="{FONT}" font-size="12" letter-spacing="3" fill="#7dffb2" fill-opacity="0.65">{sub}</text>
   </g>""")
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="Threat Hunting Board of Truth: {metrics['cves_reported']} CVEs reported, {metrics['repos_confirmed']} malicious repos confirmed, {metrics['containers_confirmed']} malicious containers confirmed">
+    title_y = INSET + 42
+    rule_y = title_y + 16
+    footer_y = H - INSET - 20
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="Threat Hunting Board of Truth: {metrics['cves_reported']} CVEs reported, {metrics['repos_confirmed']} malicious repos confirmed, {metrics['containers_confirmed']} malicious containers confirmed">
+  <style>
+    .rain {{ font-family: {FONT}; font-size: 15px; fill: #00ff9c; animation: fall linear infinite; }}
+    @keyframes fall {{ from {{ transform: translateY(0); }} to {{ transform: translateY({loop}px); }} }}
+    @media (prefers-reduced-motion: reduce) {{ .rain {{ animation: none; }} }}
+  </style>
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#04070f"/>
-      <stop offset="0.7" stop-color="#050c1c"/>
-      <stop offset="1" stop-color="#04070f"/>
+      <stop offset="0" stop-color="#010a05"/>
+      <stop offset="0.5" stop-color="#031009"/>
+      <stop offset="1" stop-color="#010a05"/>
     </linearGradient>
-    <radialGradient id="glow" cx="0.5" cy="0.62" r="0.55">
-      <stop offset="0" stop-color="#1f6feb" stop-opacity="0.35"/>
-      <stop offset="1" stop-color="#1f6feb" stop-opacity="0"/>
-    </radialGradient>
+    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#010a05" stop-opacity="1"/>
+      <stop offset="0.18" stop-color="#010a05" stop-opacity="0"/>
+      <stop offset="0.82" stop-color="#010a05" stop-opacity="0"/>
+      <stop offset="1" stop-color="#010a05" stop-opacity="1"/>
+    </linearGradient>
     <pattern id="scan" width="3" height="3" patternUnits="userSpaceOnUse">
-      <rect width="3" height="1" fill="#38bdf8" fill-opacity="0.05"/>
+      <rect width="3" height="1" fill="#00ff9c" fill-opacity="0.04"/>
     </pattern>
-    <linearGradient id="spine" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#00eaff"/>
-      <stop offset="1" stop-color="#1f6feb"/>
+    <linearGradient id="rule" gradientUnits="userSpaceOnUse" x1="{W // 2 - 380}" y1="0" x2="{W // 2 + 380}" y2="0">
+      <stop offset="0" stop-color="#00ff9c" stop-opacity="0"/>
+      <stop offset="0.2" stop-color="#00ff9c"/>
+      <stop offset="0.5" stop-color="#00eaff"/>
+      <stop offset="0.8" stop-color="#00ff9c"/>
+      <stop offset="1" stop-color="#00ff9c" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="rule" gradientUnits="userSpaceOnUse" x1="240" y1="0" x2="1040" y2="0">
-      <stop offset="0" stop-color="#00eaff" stop-opacity="0"/>
-      <stop offset="0.15" stop-color="#00eaff"/>
-      <stop offset="0.5" stop-color="#7b2dff"/>
-      <stop offset="0.85" stop-color="#ff2d7e"/>
-      <stop offset="1" stop-color="#ff2d7e" stop-opacity="0"/>
-    </linearGradient>
+    <clipPath id="frame"><rect width="{W}" height="{H}"/></clipPath>
   </defs>
-  <rect width="{w}" height="{h}" fill="url(#sky)"/>
-  <rect width="{w}" height="{h}" fill="url(#glow)"/>
-  <rect width="{w}" height="{h}" fill="url(#scan)"/>
-  <rect width="6" height="{h}" fill="url(#spine)"/>
-  <g stroke="#38bdf8" stroke-width="2" fill="none" stroke-opacity="0.8">
-    <path d="M40 26 h26 M40 26 v26"/>
-    <path d="M1240 26 h-26 M1240 26 v26"/>
-    <path d="M40 274 h26 M40 274 v-26"/>
-    <path d="M1240 274 h-26 M1240 274 v-26"/>
-  </g>
-  <text x="640" y="56" text-anchor="middle" font-family="{font}" font-size="22" letter-spacing="6" fill="#00eaff">// THREAT HUNTING BOARD OF TRUTH</text>
-  <line x1="240" y1="74" x2="1040" y2="74" stroke="url(#rule)" stroke-width="1.5"/>{"".join(panels)}
-  <text x="640" y="276" text-anchor="middle" font-family="{font}" font-size="12" letter-spacing="3" fill="#5fd9ff" fill-opacity="0.6">UPDATED {metrics['updated']}</text>
+  <rect width="{W}" height="{H}" fill="url(#sky)"/>
+  <g clip-path="url(#frame)">{rain}</g>
+  <rect width="{W}" height="{H}" fill="url(#fade)"/>
+  <rect width="{W}" height="{H}" fill="url(#scan)"/>
+  <g stroke="#00ff9c" stroke-width="2" fill="none" stroke-opacity="0.85">{_corners(INSET, INSET, W - 2 * INSET, H - 2 * INSET, 28)}</g>
+  <text x="{W // 2}" y="{title_y}" text-anchor="middle" font-family="{FONT}" font-size="22" letter-spacing="6" fill="#00ff9c">// THREAT HUNTING BOARD OF TRUTH</text>
+  <line x1="{W // 2 - 380}" y1="{rule_y}" x2="{W // 2 + 380}" y2="{rule_y}" stroke="url(#rule)" stroke-width="1.5"/>{"".join(panels)}
+  <text x="{W // 2}" y="{footer_y}" text-anchor="middle" font-family="{FONT}" font-size="12" letter-spacing="3" fill="#7dffb2" fill-opacity="0.6">UPDATED {metrics['updated']}</text>
 </svg>
 """
 
