@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="300" viewBox="0 0 1280 300" role="img" aria-label="Threat Hunting Board of Truth: 2 CVEs reported, 103 malicious repos confirmed, 179 malicious containers confirmed">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#04070f"/>
+      <stop offset="0.7" stop-color="#050c1c"/>
+      <stop offset="1" stop-color="#04070f"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.62" r="0.55">
+      <stop offset="0" stop-color="#1f6feb" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#1f6feb" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="scan" width="3" height="3" patternUnits="userSpaceOnUse">
+      <rect width="3" height="1" fill="#38bdf8" fill-opacity="0.05"/>
+    </pattern>
+    <linearGradient id="spine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#00eaff"/>
+      <stop offset="1" stop-color="#1f6feb"/>
+    </linearGradient>
+    <linearGradient id="rule" gradientUnits="userSpaceOnUse" x1="240" y1="0" x2="1040" y2="0">
+      <stop offset="0" stop-color="#00eaff" stop-opacity="0"/>
+      <stop offset="0.15" stop-color="#00eaff"/>
+      <stop offset="0.5" stop-color="#7b2dff"/>
+      <stop offset="0.85" stop-color="#ff2d7e"/>
+      <stop offset="1" stop-color="#ff2d7e" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="300" fill="url(#sky)"/>
+  <rect width="1280" height="300" fill="url(#glow)"/>
+  <rect width="1280" height="300" fill="url(#scan)"/>
+  <rect width="6" height="300" fill="url(#spine)"/>
+  <g stroke="#38bdf8" stroke-width="2" fill="none" stroke-opacity="0.8">
+    <path d="M40 26 h26 M40 26 v26"/>
+    <path d="M1240 26 h-26 M1240 26 v26"/>
+    <path d="M40 274 h26 M40 274 v-26"/>
+    <path d="M1240 274 h-26 M1240 274 v-26"/>
+  </g>
+  <text x="640" y="56" text-anchor="middle" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="22" letter-spacing="6" fill="#00eaff">// THREAT HUNTING BOARD OF TRUTH</text>
+  <line x1="240" y1="74" x2="1040" y2="74" stroke="url(#rule)" stroke-width="1.5"/>
+  <g transform="translate(64,96)">
+    <rect width="368" height="150" rx="10" fill="#050c1c" fill-opacity="0.85" stroke="#ff2d7e" stroke-opacity="0.55"/>
+    <rect width="4" height="150" rx="2" fill="#ff2d7e"/>
+    <text x="28" y="40" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="15" letter-spacing="3" fill="#ff2d7e">CVEs REPORTED</text>
+    <text x="28" y="108" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="64" font-weight="700" fill="#e6f7ff">2</text>
+    <text x="28" y="134" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="13" letter-spacing="2" fill="#5fd9ff" fill-opacity="0.7">to maintainers</text>
+  </g>
+  <g transform="translate(456,96)">
+    <rect width="368" height="150" rx="10" fill="#050c1c" fill-opacity="0.85" stroke="#00eaff" stroke-opacity="0.55"/>
+    <rect width="4" height="150" rx="2" fill="#00eaff"/>
+    <text x="28" y="40" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="15" letter-spacing="3" fill="#00eaff">MALICIOUS REPOS</text>
+    <text x="28" y="108" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="64" font-weight="700" fill="#e6f7ff">103</text>
+    <text x="28" y="134" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="13" letter-spacing="2" fill="#5fd9ff" fill-opacity="0.7">confirmed</text>
+  </g>
+  <g transform="translate(848,96)">
+    <rect width="368" height="150" rx="10" fill="#050c1c" fill-opacity="0.85" stroke="#7b2dff" stroke-opacity="0.55"/>
+    <rect width="4" height="150" rx="2" fill="#7b2dff"/>
+    <text x="28" y="40" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="15" letter-spacing="3" fill="#7b2dff">MALICIOUS CONTAINERS</text>
+    <text x="28" y="108" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="64" font-weight="700" fill="#e6f7ff">179</text>
+    <text x="28" y="134" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="13" letter-spacing="2" fill="#5fd9ff" fill-opacity="0.7">confirmed</text>
+  </g>
+  <text x="640" y="276" text-anchor="middle" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="12" letter-spacing="3" fill="#5fd9ff" fill-opacity="0.6">UPDATED 2026-09-30</text>
+</svg>

@@ -37,9 +37,7 @@ I hunt vulnerabilities and malicious code in the open-source supply chain, then 
 <div align="center">
 
 <!-- metrics-badges:start -->
-[![CVEs_REPORTED](https://img.shields.io/badge/CVEs_REPORTED-2-e11d48?style=for-the-badge&labelColor=04070f)](METRICS.md)
-[![MALICIOUS_REPOS_CONFIRMED](https://img.shields.io/badge/MALICIOUS_REPOS_CONFIRMED-103-1f6feb?style=for-the-badge&labelColor=04070f)](METRICS.md)
-[![MALICIOUS_CONTAINERS_CONFIRMED](https://img.shields.io/badge/MALICIOUS_CONTAINERS_CONFIRMED-179-1f6feb?style=for-the-badge&labelColor=04070f)](METRICS.md)
+<a href="METRICS.md"><img src="assets/metrics.svg" alt="Threat Hunting Board of Truth" width="100%"/></a>
 <!-- metrics-badges:end -->
 
 </div>
