@@ -21,7 +21,7 @@
 
 ## `// whoami`
 
-Marine, then gang investigator, now DevOps security. I work on CI/CD, supply chain and runtime detection, and I hunt CVEs in open-source packages.
+Marine, then gang investigator, now DevOps security. I work on CI/CD, supply chain and runtime detection, and hunt CVEs and malicious components in open-source packages.
 
 ## `// research`
 
