@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="Threat Hunting Board of Truth: 2 CVEs reported, 103 malicious repos confirmed, 179 malicious containers confirmed">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="Threat Hunting Board of Truth: 3 CVEs reported, 103 malicious repos confirmed, 179 malicious containers confirmed">
   <style>
     .rain { font-family: 'Consolas','SF Mono','Fira Code',monospace; font-size: 15px; fill: #00ff9c; animation: fall linear infinite; }
     @keyframes fall { from { transform: translateY(0); } to { transform: translateY(342px); } }
@@ -39,7 +39,7 @@
     <rect width="368" height="144" rx="6" fill="#03060d" fill-opacity="0.88" stroke="#ff2d7e" stroke-opacity="0.45"/>
     <g stroke="#ff2d7e" stroke-width="2" fill="none"><path d="M0 0 h12 M0 0 v12"/><path d="M368 0 h-12 M368 0 v12"/><path d="M0 144 h12 M0 144 v-12"/><path d="M368 144 h-12 M368 144 v-12"/></g>
     <text x="184" y="36" text-anchor="middle" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="14" letter-spacing="3" fill="#ff2d7e">CVEs REPORTED</text>
-    <text x="184" y="98" text-anchor="middle" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="58" font-weight="700" fill="#e6f7ff">2</text>
+    <text x="184" y="98" text-anchor="middle" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="58" font-weight="700" fill="#e6f7ff">3</text>
     <text x="184" y="124" text-anchor="middle" font-family="'Consolas','SF Mono','Fira Code',monospace" font-size="12" letter-spacing="3" fill="#7dffb2" fill-opacity="0.65">to maintainers</text>
   </g>
   <g transform="translate(456,100)">
