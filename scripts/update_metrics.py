@@ -153,7 +153,10 @@ def main():
         f"_Updated {metrics['updated']}_",
     ])
     (ROOT / "assets" / "metrics.svg").write_text(render_svg(metrics))
-    badges = '<a href="METRICS.md"><img src="assets/metrics.svg" alt="Threat Hunting Board of Truth" width="100%"/></a>'
+    # Version the image URL by its counts so GitHub's image cache refetches when a number changes.
+    version = f"{metrics['cves_reported']}-{metrics['repos_confirmed']}-{metrics['containers_confirmed']}"
+    badges = (f'<a href="METRICS.md"><img src="assets/metrics.svg?v={version}" '
+              'alt="Threat Hunting Board of Truth" width="100%"/></a>')
     readme = ROOT / "README.md"
     readme.write_text(re.sub(
         r"(<!-- metrics-badges:start -->\n).*?(<!-- metrics-badges:end -->)",
