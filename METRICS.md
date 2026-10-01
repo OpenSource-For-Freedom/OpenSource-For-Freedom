@@ -7,7 +7,7 @@
 <!-- metrics:start -->
 | | |
 |---|---|
-| CVEs reported to maintainers | **2** |
+| CVEs reported to maintainers | **3** |
 | Malicious repositories confirmed | **103** |
 | Malicious container images confirmed | **179** |
 
