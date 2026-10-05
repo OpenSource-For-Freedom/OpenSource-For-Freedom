@@ -1,0 +1,28 @@
+name: Metrics
+
+on:
+  schedule:
+    - cron: "23 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/update_metrics.py
+        env:
+          METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add metrics.json METRICS.md README.md assets/metrics.svg
+          git diff --cached --quiet || git commit -m "Update metrics"
+          git push
