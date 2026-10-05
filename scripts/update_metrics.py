@@ -7,8 +7,11 @@ with METRICS_TOKEN (read-only contents access to both repos):
   minus rows a reviewer marked ``reject`` (a running total, not one run's count);
 * containers_confirmed: the confirmed-image total in KNORR's README.
 
-Without the token, or if a source can't be read, the last known value is kept.
-cves_reported and since are edited by hand in metrics.json.
+Counts never go down: a higher number set by hand in metrics.json (for example
+the totals on the OpenSourceMalware profile, which include reports filed before
+these ledgers existed) is kept until the ledgers pass it. Without the token, or
+if a source can't be read, the last known value is kept. cves_reported and
+since are edited by hand in metrics.json.
 """
 
 import csv
@@ -170,8 +173,10 @@ def main():
     changed = False
     for key, count in SOURCES.items():
         value = count()
-        # Keep the last known value if a README can't be read or parsed.
-        if value is not None and value != metrics.get(key):
+        # Counts only go up. The ledgers miss reports filed before they existed
+        # or by hand, so a total set in metrics.json (e.g. from the OSM profile)
+        # is a floor; an unreadable source keeps the last value.
+        if value is not None and value > metrics.get(key, 0):
             metrics[key] = value
             changed = True
     if changed:
