@@ -40,6 +40,12 @@ I hunt vulnerabilities and malicious code in the open-source supply chain, then 
 <a href="METRICS.md"><img src="assets/metrics.svg?v=3-141-179" alt="Threat Hunting Board of Truth" width="100%"/></a>
 <!-- metrics-badges:end -->
 
+<br/>
+
+<a href="https://opensourcemalware.com/my-submissions"><img src="assets/osm-reports.png" alt="OpenSourceMalware: view my threat reports" width="100%"/></a>
+
+<a href="https://opensourcemalware.com/my-submissions"><b>opensourcemalware.com/my-submissions</b></a>
+
 </div>
 
 ## `// T00ls`
