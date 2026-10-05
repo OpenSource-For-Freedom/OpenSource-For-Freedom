@@ -1,17 +1,20 @@
 """Refresh metrics.json, assets/metrics.svg, the README board and METRICS.md.
 
-git_warden and KNORR are private, so counts are read through the GitHub API
-with METRICS_TOKEN (read-only contents access to both repos):
+git_warden, KNORR and Huginn are private, so counts are read through the GitHub
+API with METRICS_TOKEN (read-only contents access to all three repos):
 
 * repos_confirmed: every repository in git_warden's evidence/findings.csv,
   minus rows a reviewer marked ``reject`` (a running total, not one run's count);
-* containers_confirmed: the confirmed-image total in KNORR's README.
+* containers_confirmed: the higher of KNORR's README total and the rows in
+  git_warden's evidence/containers.csv (written by the weekly joint hunt);
+* cves_reported: findings in Huginn's ledger/validated_findings.csv (huginn-ledger
+  branch) that have gone to a maintainer or had a CVE requested.
 
 Counts never go down: a higher number set by hand in metrics.json (for example
 the totals on the OpenSourceMalware profile, which include reports filed before
 these ledgers existed) is kept until the ledgers pass it. Without the token, or
-if a source can't be read, the last known value is kept. cves_reported and
-since are edited by hand in metrics.json.
+if a source can't be read, the last known value is kept. since is edited by
+hand in metrics.json.
 """
 
 import csv
@@ -76,6 +79,19 @@ def knorr_readme_total():
     return int(match.group(1).replace(",", "")) if match else None
 
 
+NOT_REPORTED = {"", "NOT_CONTACTED", "NOT_REQUESTED"}
+
+
+def cves_reported():
+    text = fetch_file("Huginn", "ledger/validated_findings.csv?ref=huginn-ledger")
+    if text is None:
+        return None
+    rows = csv.DictReader(io.StringIO(text.lstrip("\ufeff")))
+    return sum(1 for r in rows
+               if (r.get("cve_id") or "").strip() not in NOT_REPORTED
+               or (r.get("vendor_contact") or "").strip() not in NOT_REPORTED)
+
+
 def counts(ledgers):
     repos = ledgers["repositories"]
     images = ledgers["containers"]
@@ -85,6 +101,7 @@ def counts(ledgers):
     return {
         "repos_confirmed": None if repos is None else len(repos),
         "containers_confirmed": max(container_counts) if container_counts else None,
+        "cves_reported": cves_reported(),
     }
 
 
