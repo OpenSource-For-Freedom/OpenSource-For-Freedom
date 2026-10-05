@@ -37,7 +37,7 @@ I hunt vulnerabilities and malicious code in the open-source supply chain, then 
 <div align="center">
 
 <!-- metrics-badges:start -->
-<a href="METRICS.md"><img src="assets/metrics.svg?v=3-103-179" alt="Threat Hunting Board of Truth" width="100%"/></a>
+<a href="METRICS.md"><img src="assets/metrics.svg?v=3-141-179" alt="Threat Hunting Board of Truth" width="100%"/></a>
 <!-- metrics-badges:end -->
 
 </div>
