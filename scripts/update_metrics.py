@@ -1,11 +1,16 @@
 """Refresh metrics.json, assets/metrics.svg, the README board and METRICS.md.
 
 Repo and container counts are read from the public git_warden and KNORR
-READMEs. cves_reported is edited by hand in metrics.json when a report is sent.
+READMEs. cves_reported is counted from Huginn's private ledger/validated_findings.csv
+when HUGINN_LEDGER_TOKEN is set (a finding counts once a CVE has been requested or
+the maintainer has been contacted); otherwise the value in metrics.json is kept.
 """
 
+import csv
 import datetime
+import io
 import json
+import os
 import pathlib
 import random
 import re
@@ -20,10 +25,41 @@ SOURCES = {
 
 
 def fetch_count(repo, pattern):
-    with urllib.request.urlopen(RAW.format(repo=repo), timeout=30) as resp:
-        text = resp.read().decode("utf-8")
+    try:
+        with urllib.request.urlopen(RAW.format(repo=repo), timeout=30) as resp:
+            text = resp.read().decode("utf-8")
+    except OSError as err:  # private, renamed or unreachable: keep the last known value
+        print(f"{repo} README not readable, keeping last value: {err}")
+        return None
     match = re.search(pattern, text)
     return int(match.group(1).replace(",", "")) if match else None
+
+
+LEDGER_CSV = ("https://api.github.com/repos/OpenSource-For-Freedom/Huginn/contents/"
+              "ledger/validated_findings.csv?ref=huginn-ledger")
+NOT_REPORTED = {"", "NOT_CONTACTED", "NOT_REQUESTED"}
+
+
+def reported_count(rows):
+    """Findings that have gone to a maintainer or to MITRE."""
+    return sum(1 for row in rows
+               if (row.get("cve_id") or "").strip() not in NOT_REPORTED
+               or (row.get("vendor_contact") or "").strip() not in NOT_REPORTED)
+
+
+def fetch_cves_reported():
+    token = os.environ.get("HUGINN_LEDGER_TOKEN")
+    if not token:
+        return None
+    request = urllib.request.Request(LEDGER_CSV, headers={
+        "Authorization": f"Bearer {token}", "Accept": "application/vnd.github.raw"})
+    try:
+        with urllib.request.urlopen(request, timeout=30) as resp:
+            text = resp.read().decode("utf-8-sig")
+    except OSError as err:
+        print(f"ledger not readable, keeping cves_reported: {err}")
+        return None
+    return reported_count(csv.DictReader(io.StringIO(text)))
 
 
 STATS = (
@@ -133,8 +169,9 @@ def main():
     path = ROOT / "metrics.json"
     metrics = json.loads(path.read_text())
     changed = False
-    for key, (repo, pattern) in SOURCES.items():
-        value = fetch_count(repo, pattern)
+    counts = {key: fetch_count(repo, pattern) for key, (repo, pattern) in SOURCES.items()}
+    counts["cves_reported"] = fetch_cves_reported()
+    for key, value in counts.items():
         # Keep the last known value if a README can't be read or parsed.
         if value is not None and value != metrics.get(key):
             metrics[key] = value

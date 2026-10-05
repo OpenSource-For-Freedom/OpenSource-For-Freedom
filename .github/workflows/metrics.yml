@@ -17,6 +17,8 @@ jobs:
         with:
           python-version: "3.12"
       - run: python scripts/update_metrics.py
+        env:
+          HUGINN_LEDGER_TOKEN: ${{ secrets.HUGINN_LEDGER_TOKEN }}
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
