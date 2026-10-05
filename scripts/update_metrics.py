@@ -1,29 +1,67 @@
 """Refresh metrics.json, assets/metrics.svg, the README board and METRICS.md.
 
-Repo and container counts are read from the public git_warden and KNORR
-READMEs. cves_reported is edited by hand in metrics.json when a report is sent.
+git_warden and KNORR are private, so counts are read through the GitHub API
+with METRICS_TOKEN (read-only contents access to both repos):
+
+* repos_confirmed: every repository in git_warden's evidence/findings.csv,
+  minus rows a reviewer marked ``reject`` (a running total, not one run's count);
+* containers_confirmed: the confirmed-image total in KNORR's README.
+
+Counts never go down: a higher number set by hand in metrics.json (for example
+the totals on the OpenSourceMalware profile, which include reports filed before
+these ledgers existed) is kept until the ledgers pass it. Without the token, or
+if a source can't be read, the last known value is kept. cves_reported and
+since are edited by hand in metrics.json.
 """
 
+import csv
 import datetime
+import io
 import json
+import os
 import pathlib
 import random
 import re
+import urllib.error
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-RAW = "https://raw.githubusercontent.com/OpenSource-For-Freedom/{repo}/main/README.md"
-SOURCES = {
-    "repos_confirmed": ("git_warden", r"of ([\d,]+) repositories confirmed malicious"),
-    "containers_confirmed": ("KNORR", r"([\d,]+) confirmed malicious images"),
-}
+API = "https://api.github.com/repos/OpenSource-For-Freedom/{repo}/contents/{path}"
 
 
-def fetch_count(repo, pattern):
-    with urllib.request.urlopen(RAW.format(repo=repo), timeout=30) as resp:
-        text = resp.read().decode("utf-8")
-    match = re.search(pattern, text)
+def fetch_file(repo, path):
+    """A file's text from a private repo, or None without a token or on any error."""
+    token = os.environ.get("METRICS_TOKEN")
+    if not token:
+        return None
+    req = urllib.request.Request(API.format(repo=repo, path=path), headers={
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github.raw+json",
+    })
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return resp.read().decode("utf-8")
+    except (urllib.error.URLError, TimeoutError) as exc:
+        print(f"could not read {repo}/{path}: {exc}")
+        return None
+
+
+def repos_confirmed():
+    text = fetch_file("git_warden", "evidence/findings.csv")
+    if text is None:
+        return None
+    rows = csv.DictReader(io.StringIO(text))
+    return sum(1 for r in rows if r.get("kind") == "repository"
+               and (r.get("reviewer_decision") or "").strip().lower() != "reject")
+
+
+def containers_confirmed():
+    text = fetch_file("KNORR", "README.md")
+    match = text and re.search(r"([\d,]+) confirmed malicious images", text)
     return int(match.group(1).replace(",", "")) if match else None
+
+
+SOURCES = {"repos_confirmed": repos_confirmed, "containers_confirmed": containers_confirmed}
 
 
 STATS = (
@@ -124,7 +162,7 @@ def render_svg(metrics):
   <g stroke="#00ff9c" stroke-width="2" fill="none" stroke-opacity="0.85">{_corners(INSET, INSET, W - 2 * INSET, H - 2 * INSET, 28)}</g>
   <text x="{W // 2}" y="{title_y}" text-anchor="middle" font-family="{FONT}" font-size="22" letter-spacing="6" fill="#00ff9c">// THREAT HUNTING BOARD OF TRUTH</text>
   <line x1="{W // 2 - 380}" y1="{rule_y}" x2="{W // 2 + 380}" y2="{rule_y}" stroke="url(#rule)" stroke-width="1.5"/>{"".join(panels)}
-  <text x="{W // 2}" y="{footer_y}" text-anchor="middle" font-family="{FONT}" font-size="12" letter-spacing="3" fill="#7dffb2" fill-opacity="0.6">UPDATED {metrics['updated']}</text>
+  <text x="{W // 2}" y="{footer_y}" text-anchor="middle" font-family="{FONT}" font-size="12" letter-spacing="3" fill="#7dffb2" fill-opacity="0.6">HUNTING SINCE {metrics['since']}  //  UPDATED {metrics['updated']}</text>
 </svg>
 """
 
@@ -133,10 +171,12 @@ def main():
     path = ROOT / "metrics.json"
     metrics = json.loads(path.read_text())
     changed = False
-    for key, (repo, pattern) in SOURCES.items():
-        value = fetch_count(repo, pattern)
-        # Keep the last known value if a README can't be read or parsed.
-        if value is not None and value != metrics.get(key):
+    for key, count in SOURCES.items():
+        value = count()
+        # Counts only go up. The ledgers miss reports filed before they existed
+        # or by hand, so a total set in metrics.json (e.g. from the OSM profile)
+        # is a floor; an unreadable source keeps the last value.
+        if value is not None and value > metrics.get(key, 0):
             metrics[key] = value
             changed = True
     if changed:
@@ -149,6 +189,7 @@ def main():
         f"| CVEs reported to maintainers | **{metrics['cves_reported']}** |",
         f"| Malicious repositories confirmed | **{metrics['repos_confirmed']}** |",
         f"| Malicious container images confirmed | **{metrics['containers_confirmed']}** |",
+        f"| Hunting since | **{metrics['since']}** |",
         "",
         f"_Updated {metrics['updated']}_",
     ])
