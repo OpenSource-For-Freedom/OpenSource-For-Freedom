@@ -5,7 +5,8 @@ API with METRICS_TOKEN (read-only contents access to all three repos):
 
 * repos_confirmed: every repository in git_warden's evidence/findings.csv,
   minus rows a reviewer marked ``reject`` (a running total, not one run's count);
-* containers_confirmed: the confirmed-image total in KNORR's README;
+* containers_confirmed: the higher of KNORR's README total and the rows in
+  git_warden's evidence/containers.csv (written by the weekly joint hunt);
 * cves_reported: findings in Huginn's ledger/validated_findings.csv (huginn-ledger
   branch) that have gone to a maintainer or had a CVE requested.
 
@@ -48,16 +49,31 @@ def fetch_file(repo, path):
         return None
 
 
-def repos_confirmed():
-    text = fetch_file("git_warden", "evidence/findings.csv")
+def _ledger(repo, path):
+    """Rows of a ledger CSV, without reviewer-rejected false positives (None if unreadable)."""
+    text = fetch_file(repo, path)
     if text is None:
         return None
-    rows = csv.DictReader(io.StringIO(text))
-    return sum(1 for r in rows if r.get("kind") == "repository"
-               and (r.get("reviewer_decision") or "").strip().lower() != "reject")
+    return [r for r in csv.DictReader(io.StringIO(text))
+            if (r.get("reviewer_decision") or "").strip().lower() != "reject"]
 
 
-def containers_confirmed():
+def load_ledgers():
+    """git_warden's evidence store: findings.csv (repositories and VS Code
+    extensions) and containers.csv (KNORR's confirmed images, written by the
+    weekly joint hunt). Each is None when it can't be read."""
+    findings = _ledger("git_warden", "evidence/findings.csv")
+    containers = _ledger("git_warden", "evidence/containers.csv")
+    return {
+        "repositories": None if findings is None else
+        [r for r in findings if r.get("kind") == "repository"],
+        "extensions": None if findings is None else
+        [r for r in findings if r.get("kind") == "vscode-extension"],
+        "containers": containers,
+    }
+
+
+def knorr_readme_total():
     text = fetch_file("KNORR", "README.md")
     match = text and re.search(r"([\d,]+) confirmed malicious images", text)
     return int(match.group(1).replace(",", "")) if match else None
@@ -76,8 +92,57 @@ def cves_reported():
                or (r.get("vendor_contact") or "").strip() not in NOT_REPORTED)
 
 
-SOURCES = {"repos_confirmed": repos_confirmed, "containers_confirmed": containers_confirmed,
-           "cves_reported": cves_reported}
+def counts(ledgers):
+    repos = ledgers["repositories"]
+    images = ledgers["containers"]
+    readme = knorr_readme_total()
+    container_counts = [n for n in (readme, None if images is None else len(images))
+                        if n is not None]
+    return {
+        "repos_confirmed": None if repos is None else len(repos),
+        "containers_confirmed": max(container_counts) if container_counts else None,
+        "cves_reported": cves_reported(),
+    }
+
+
+def _osm(row):
+    # The ledgers only know submissions made since they began, so "not recorded"
+    # rather than "pending": an older report may already be in OSM.
+    return "reported" if row.get("osm_status") == "submitted" else "not recorded"
+
+
+def _section(title, rows, head, cells):
+    """A collapsible Markdown table. Names are code spans, not links: these are
+    malware, and the page should not send anyone to them."""
+    lines = [f"<details><summary><b>{title} ({len(rows)})</b></summary>", "",
+             "| " + " | ".join(head) + " |", "|" + "---|" * len(head)]
+    lines += ["| " + " | ".join(cells(r)) + " |" for r in rows]
+    lines += ["", "</details>", ""]
+    return lines
+
+
+def render_list(ledgers):
+    """The confirmed list for METRICS.md, or None when findings.csv can't be read.
+    Containers are listed once the weekly joint hunt has published containers.csv."""
+    if ledgers["repositories"] is None:
+        return None
+    out = []
+    out += _section(
+        "Malicious repositories", sorted(ledgers["repositories"], key=lambda r: r["id"].lower()),
+        ("Repository", "Family", "OSM"),
+        lambda r: (f"`{r['id']}`", r.get("family") or "general", _osm(r)))
+    if ledgers["containers"]:
+        out += _section(
+            "Malicious container images",
+            sorted(ledgers["containers"], key=lambda r: r["image"].lower()),
+            ("Image", "Publisher", "OSM"),
+            lambda r: (f"`{r['image']}`", f"`{r.get('publisher') or ''}`", _osm(r)))
+    if ledgers["extensions"]:
+        out += _section(
+            "Malicious VS Code extensions", sorted(ledgers["extensions"], key=lambda r: r["id"].lower()),
+            ("Extension", "Registry", "OSM"),
+            lambda r: (f"`{r['id']}`", r.get("registry") or "", _osm(r)))
+    return "\n".join(out)
 
 
 STATS = (
@@ -187,8 +252,8 @@ def main():
     path = ROOT / "metrics.json"
     metrics = json.loads(path.read_text())
     changed = False
-    for key, count in SOURCES.items():
-        value = count()
+    ledgers = load_ledgers()
+    for key, value in counts(ledgers).items():
         # Counts only go up. The ledgers miss reports filed before they existed
         # or by hand, so a total set in metrics.json (e.g. from the OSM profile)
         # is a floor; an unreadable source keeps the last value.
@@ -223,6 +288,10 @@ def main():
     text = page.read_text()
     text = re.sub(r"(<!-- metrics:start -->\n).*?(<!-- metrics:end -->)",
                   lambda m: m.group(1) + table + "\n" + m.group(2), text, flags=re.S)
+    listing = render_list(ledgers)
+    if listing is not None:  # keep the last list when a ledger can't be read
+        text = re.sub(r"(<!-- confirmed:start -->\n).*?(<!-- confirmed:end -->)",
+                      lambda m: m.group(1) + listing + m.group(2), text, flags=re.S)
     page.write_text(text)
 
 

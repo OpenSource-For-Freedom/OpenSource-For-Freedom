@@ -3,6 +3,8 @@ name: Metrics
 on:
   schedule:
     - cron: "23 6 * * *"
+    # Monday, after the weekly hunts (KNORR joint 05:17, extensions 07:43, Warden 09:23).
+    - cron: "47 11 * * 1"
   workflow_dispatch:
 
 permissions:
