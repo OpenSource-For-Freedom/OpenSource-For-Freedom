@@ -10,6 +10,12 @@ API with METRICS_TOKEN (read-only contents access to all three repos):
 * cves_reported: findings in Huginn's ledger/validated_findings.csv (huginn-ledger
   branch) that have gone to a maintainer or had a CVE requested.
 
+Each listed finding carries an OSM state: ``reported`` (our own report, recorded
+in the ledgers), ``already in OSM`` (we confirmed it independently, OSM already
+had another researcher's report; those are the ones we enrich), or
+``not recorded``. METRICS_EVIDENCE_DIR points the script at a local evidence/
+directory instead of the API (for a dry run or a test).
+
 Counts never go down: a higher number set by hand in metrics.json (for example
 the totals on the OpenSourceMalware profile, which include reports filed before
 these ledgers existed) is kept until the ledgers pass it. Without the token, or
@@ -34,6 +40,13 @@ API = "https://api.github.com/repos/OpenSource-For-Freedom/{repo}/contents/{path
 
 def fetch_file(repo, path):
     """A file's text from a private repo, or None without a token or on any error."""
+    local = os.environ.get("METRICS_EVIDENCE_DIR")
+    if local and repo == "git_warden" and path.startswith("evidence/"):
+        try:
+            return (pathlib.Path(local) / path[len("evidence/"):]).read_text(encoding="utf-8")
+        except OSError as exc:
+            print(f"could not read {path} from {local}: {exc}")
+            return None
     token = os.environ.get("METRICS_TOKEN")
     if not token:
         return None
@@ -64,7 +77,10 @@ def load_ledgers():
     weekly joint hunt). Each is None when it can't be read."""
     findings = _ledger("git_warden", "evidence/findings.csv")
     containers = _ledger("git_warden", "evidence/containers.csv")
+    known = fetch_file("git_warden", "evidence/osm_known_reports.csv")
     return {
+        "osm_known": set() if known is None else {
+            r["key"].casefold() for r in csv.DictReader(io.StringIO(known)) if r.get("key")},
         "repositories": None if findings is None else
         [r for r in findings if r.get("kind") == "repository"],
         "extensions": None if findings is None else
@@ -105,10 +121,36 @@ def counts(ledgers):
     }
 
 
-def _osm(row):
-    # The ledgers only know submissions made since they began, so "not recorded"
-    # rather than "pending": an older report may already be in OSM.
-    return "reported" if row.get("osm_status") == "submitted" else "not recorded"
+OSM_SEEDED = {"osm_repository", "osm_container"}
+
+
+def _osm(row, known=frozenset()):
+    """A finding's OSM state. ``reported``: our own report, recorded in the
+    ledgers. ``already in OSM``: we confirmed it on our own evidence but OSM
+    already held another researcher's report (seeded from OSM's feed, or found in
+    OSM's known-report list) -- these are the reports we enrich rather than
+    duplicate. Otherwise ``not recorded``: the ledgers only know submissions made
+    since they began, so an older report of ours may still be in OSM."""
+    if row.get("osm_status") == "submitted":
+        return "reported"
+    if (row.get("detection_method") in OSM_SEEDED
+            or (row.get("key") or "").casefold() in known
+            or "already in osm" in (row.get("notes") or "").casefold()):
+        return "already in OSM"
+    return "not recorded"
+
+
+def osm_breakdown(ledgers):
+    """Counts of each OSM state over every listed finding (repositories,
+    containers and extensions), or None when findings.csv can't be read."""
+    if ledgers["repositories"] is None:
+        return None
+    rows = ledgers["repositories"] + (ledgers["containers"] or []) + (ledgers["extensions"] or [])
+    out = {"reported": 0, "already in OSM": 0, "not recorded": 0}
+    for r in rows:
+        out[_osm(r, ledgers["osm_known"])] += 1
+    out["total"] = len(rows)
+    return out
 
 
 def _section(title, rows, head, cells):
@@ -130,18 +172,18 @@ def render_list(ledgers):
     out += _section(
         "Malicious repositories", sorted(ledgers["repositories"], key=lambda r: r["id"].lower()),
         ("Repository", "Family", "OSM"),
-        lambda r: (f"`{r['id']}`", r.get("family") or "general", _osm(r)))
+        lambda r: (f"`{r['id']}`", r.get("family") or "general", _osm(r, ledgers["osm_known"])))
     if ledgers["containers"]:
         out += _section(
             "Malicious container images",
             sorted(ledgers["containers"], key=lambda r: r["image"].lower()),
             ("Image", "Publisher", "OSM"),
-            lambda r: (f"`{r['image']}`", f"`{r.get('publisher') or ''}`", _osm(r)))
+            lambda r: (f"`{r['image']}`", f"`{r.get('publisher') or ''}`", _osm(r, ledgers["osm_known"])))
     if ledgers["extensions"]:
         out += _section(
             "Malicious VS Code extensions", sorted(ledgers["extensions"], key=lambda r: r["id"].lower()),
             ("Extension", "Registry", "OSM"),
-            lambda r: (f"`{r['id']}`", r.get("registry") or "", _osm(r)))
+            lambda r: (f"`{r['id']}`", r.get("registry") or "", _osm(r, ledgers["osm_known"])))
     return "\n".join(out)
 
 
@@ -151,7 +193,7 @@ STATS = (
     ("containers_confirmed", "MALICIOUS CONTAINERS", "confirmed", "#a66bff"),
 )
 FONT = "'Consolas','SF Mono','Fira Code',monospace"
-W, H = 1280, 320
+W, H = 1280, 352
 INSET = 20          # corner brackets sit this far in from every edge
 MARGIN = 64         # panels sit this far in from the left and right edges
 GAP = 24
@@ -188,8 +230,27 @@ def _matrix_rain():
     return "".join(cols), rows * line
 
 
-def render_svg(metrics):
-    """The Board of Truth card: matrix rain, symmetric frame, three equal panels."""
+def _breakdown_line(breakdown):
+    """One line under the panels: every finding in the evidence store by OSM state."""
+    if not breakdown:
+        return ""
+    parts = [
+        (breakdown["total"], "IN THE EVIDENCE STORE", "#e6f7ff"),
+        (breakdown["reported"], "REPORTED BY US", "#00eaff"),
+        (breakdown["already in OSM"], "ALREADY IN OSM, ENRICHED", "#a66bff"),
+        (breakdown["not recorded"], "NOT RECORDED", "#7dffb2"),
+    ]
+    sep = '<tspan fill="#7dffb2" fill-opacity="0.45">  //  </tspan>'
+    body = sep.join(
+        f'<tspan fill="{c}" font-weight="700">{n}</tspan><tspan fill="#7dffb2" fill-opacity="0.75"> {label}</tspan>'
+        for n, label, c in parts)
+    return (f'<text x="{W // 2}" y="{PANEL_Y + PANEL_H + 34}" text-anchor="middle" '
+            f'font-family="{FONT}" font-size="13" letter-spacing="2">{body}</text>')
+
+
+def render_svg(metrics, breakdown=None):
+    """The Board of Truth card: matrix rain, symmetric frame, three equal panels,
+    and (when the ledgers were readable) the evidence-store split by OSM state."""
     rain, loop = _matrix_rain()
     panels = []
     for i, (key, label, sub, color) in enumerate(STATS):
@@ -243,6 +304,7 @@ def render_svg(metrics):
   <g stroke="#00ff9c" stroke-width="2" fill="none" stroke-opacity="0.85">{_corners(INSET, INSET, W - 2 * INSET, H - 2 * INSET, 28)}</g>
   <text x="{W // 2}" y="{title_y}" text-anchor="middle" font-family="{FONT}" font-size="22" letter-spacing="6" fill="#00ff9c">// THREAT HUNTING BOARD OF TRUTH</text>
   <line x1="{W // 2 - 380}" y1="{rule_y}" x2="{W // 2 + 380}" y2="{rule_y}" stroke="url(#rule)" stroke-width="1.5"/>{"".join(panels)}
+  {_breakdown_line(breakdown)}
   <text x="{W // 2}" y="{footer_y}" text-anchor="middle" font-family="{FONT}" font-size="12" letter-spacing="3" fill="#7dffb2" fill-opacity="0.6">HUNTING SINCE {metrics['since']}  //  UPDATED {metrics['updated']}</text>
 </svg>
 """
@@ -264,19 +326,31 @@ def main():
         metrics["updated"] = datetime.date.today().isoformat()
         path.write_text(json.dumps(metrics, indent=2) + "\n")
 
-    table = "\n".join([
+    lines = [
         "| | |",
         "|---|---|",
         f"| CVEs reported to maintainers | **{metrics['cves_reported']}** |",
         f"| Malicious repositories confirmed | **{metrics['repos_confirmed']}** |",
         f"| Malicious container images confirmed | **{metrics['containers_confirmed']}** |",
         f"| Hunting since | **{metrics['since']}** |",
-        "",
-        f"_Updated {metrics['updated']}_",
-    ])
-    (ROOT / "assets" / "metrics.svg").write_text(render_svg(metrics))
+    ]
+    breakdown = osm_breakdown(ledgers)
+    if breakdown:
+        lines += [
+            "",
+            "| Findings in the evidence store | |",
+            "|---|---|",
+            f"| Listed below (repositories, containers, extensions) | **{breakdown['total']}** |",
+            f"| Reported to OSM by us | **{breakdown['reported']}** |",
+            f"| Already in OSM, confirmed independently and enriched | **{breakdown['already in OSM']}** |",
+            f"| Confirmed, OSM report not recorded | **{breakdown['not recorded']}** |",
+        ]
+    table = "\n".join(lines + ["", f"_Updated {metrics['updated']}_"])
+    (ROOT / "assets" / "metrics.svg").write_text(render_svg(metrics, breakdown))
     # Version the image URL by its counts so GitHub's image cache refetches when a number changes.
     version = f"{metrics['cves_reported']}-{metrics['repos_confirmed']}-{metrics['containers_confirmed']}"
+    if breakdown:
+        version += f"-{breakdown['total']}-{breakdown['reported']}-{breakdown['already in OSM']}"
     badges = (f'<a href="METRICS.md"><img src="assets/metrics.svg?v={version}" '
               'alt="Threat Hunting Board of Truth" width="100%"/></a>')
     readme = ROOT / "README.md"
