@@ -37,7 +37,7 @@ I hunt vulnerabilities and malicious code in the open-source supply chain, then 
 <div align="center">
 
 <!-- board: hand-maintained. Edit the numbers in assets/board.svg (lines marked EDIT). -->
-<img src="assets/board.svg" alt="Threat Hunting Board of Truth: 3 CVEs reported, 425 malicious repos confirmed, 289 malicious containers confirmed, 540 findings in the evidence store" width="760"/>
+<img src="assets/board.svg" alt="Threat Hunting Board of Truth: Huginn 3 CVEs reported, Git Warden 425 malicious repos, KNÖRR 289 malicious containers, 540 findings in the evidence store" width="100%"/>
 
 <a href="METRICS.md">Full list of confirmed repositories and container images</a>
 
