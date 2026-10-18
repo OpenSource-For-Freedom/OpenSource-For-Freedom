@@ -36,22 +36,8 @@ I hunt vulnerabilities and malicious code in the open-source supply chain, then 
 
 <div align="center">
 
-<!-- board: hand-maintained. Edit the numbers in place and keep the column widths. -->
-```text
-+--------------------------------------------------------------------------------+
-|                        // THREAT HUNTING BOARD OF TRUTH                        |
-+--------------------------+--------------------------+--------------------------+
-|      CVEs REPORTED       |     MALICIOUS REPOS      |   MALICIOUS CONTAINERS   |
-|                          |                          |                          |
-|            3             |           425            |           289            |
-|                          |                          |                          |
-|      to maintainers      |        confirmed         |        confirmed         |
-+--------------------------+--------------------------+--------------------------+
-|                       540 FINDINGS IN THE EVIDENCE STORE                       |
-+--------------------------+--------------------------+--------------------------+
-|                HUNTING SINCE 2026-06-14  //  UPDATED 2026-10-17                |
-+--------------------------------------------------------------------------------+
-```
+<!-- board: hand-maintained. Edit the numbers in assets/board.svg (lines marked EDIT). -->
+<img src="assets/board.svg" alt="Threat Hunting Board of Truth: 3 CVEs reported, 425 malicious repos confirmed, 289 malicious containers confirmed, 540 findings in the evidence store" width="760"/>
 
 <a href="METRICS.md">Full list of confirmed repositories and container images</a>
 
