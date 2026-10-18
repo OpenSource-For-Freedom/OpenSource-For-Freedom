@@ -36,9 +36,25 @@ I hunt vulnerabilities and malicious code in the open-source supply chain, then 
 
 <div align="center">
 
-<!-- metrics-badges:start -->
-<a href="METRICS.md"><img src="assets/metrics.svg?v=3-425-289-540-304-79" alt="Threat Hunting Board of Truth" width="100%"/></a>
-<!-- metrics-badges:end -->
+<!-- board: hand-maintained. Edit the numbers in place; colors are ANSI escape codes
+     (bright green frame, red CVEs, cyan repos, magenta containers). Keep the column widths. -->
+```ansi
+[92m+--------------------------------------------------------------------------------+[0m
+[92m|[0m[1;97m                        // THREAT HUNTING BOARD OF TRUTH                        [0m[92m|[0m
+[92m+--------------------------+--------------------------+--------------------------+[0m
+[92m|[0m[91m      CVEs REPORTED       [0m[92m|[0m[96m     MALICIOUS REPOS      [0m[92m|[0m[95m   MALICIOUS CONTAINERS   [0m[92m|[0m
+[92m|[0m[92m                          [0m[92m|[0m[92m                          [0m[92m|[0m[92m                          [0m[92m|[0m
+[92m|[0m[1;91m            3             [0m[92m|[0m[1;96m           425            [0m[92m|[0m[1;95m           289            [0m[92m|[0m
+[92m|[0m[92m                          [0m[92m|[0m[92m                          [0m[92m|[0m[92m                          [0m[92m|[0m
+[92m|[0m[32m      to maintainers      [0m[92m|[0m[32m        confirmed         [0m[92m|[0m[32m        confirmed         [0m[92m|[0m
+[92m+--------------------------+--------------------------+--------------------------+[0m
+[92m|[0m[1;97m                       540 FINDINGS IN THE EVIDENCE STORE                       [0m[92m|[0m
+[92m+--------------------------+--------------------------+--------------------------+[0m
+[92m|[0m[32m                HUNTING SINCE 2026-06-14  //  UPDATED 2026-10-17                [0m[92m|[0m
+[92m+--------------------------------------------------------------------------------+[0m
+```
+
+<a href="METRICS.md">Full list of confirmed repositories and container images</a>
 
 <br/>
 
