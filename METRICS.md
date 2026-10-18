@@ -1,9 +1,3 @@
-<div align="center">
-
-<img src="assets/metrics.svg" alt="Threat Hunting Board of Truth" width="100%"/>
-
-</div>
-
 <!-- metrics:start -->
 | | |
 |---|---|
@@ -26,11 +20,11 @@ _Updated 2026-10-17_
 - **Malicious repos:** confirmed by [git_warden](https://github.com/OpenSource-For-Freedom/git_warden).
 - **Malicious containers:** confirmed by [KNORR](https://github.com/OpenSource-For-Freedom/KNORR).
 
-Updated every Monday after the weekly hunts, and daily. Totals are all reports submitted to OpenSourceMalware (repositories and container images), including reports filed before git_warden's and KNORR's ledgers existed; the lists below show the entries in those ledgers. Hunting began 2026-06-14, when git_warden started; KNORR joined 2026-07-07.
+Maintained by hand. The totals above are all reports submitted to OpenSourceMalware (repositories and container images), including reports filed before git_warden's and KNORR's ledgers existed; the lists below are the entries in those ledgers, last refreshed 2026-10-17. Hunting began 2026-06-14, when git_warden started; KNORR joined 2026-07-07.
 
 ## Confirmed list
 
-Every confirmed finding in the evidence store, less reviewer-rejected false positives. **OSM** reads `reported` when the ledger recorded the OpenSourceMalware submission; earlier reports filed before the ledger began show as `not recorded` (see [my submissions](https://opensourcemalware.com/my-submissions)). Names are shown as text, not links.
+Every confirmed finding in the evidence store, less reviewer-rejected false positives. **OSM** reads `reported` when the ledger recorded our OpenSourceMalware submission, `already in OSM` when we confirmed it independently but another researcher's report was already there (those we enrich rather than duplicate), and `not recorded` otherwise, which includes our reports filed before the ledger began (see [my submissions](https://opensourcemalware.com/my-submissions)). Names are shown as text, not links.
 
 <!-- confirmed:start -->
 <details><summary><b>Malicious repositories (337)</b></summary>
