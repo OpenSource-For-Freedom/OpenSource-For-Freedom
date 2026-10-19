@@ -15,7 +15,6 @@
 <a href="https://www.linkedin.com/in/tburns-offsec-specialist/"><img src="https://img.shields.io/badge/LINKEDIN-tburns--offsec--specialist-0a2540?style=for-the-badge&logo=linkedin&logoColor=38bdf8&labelColor=04070f" alt="LinkedIn"/></a>
 <img src="https://img.shields.io/badge/BLUE_TEAM-THREAT_HUNTER-1f6feb?style=for-the-badge&labelColor=04070f" alt="Blue Team Threat Hunter"/>
 <img src="https://img.shields.io/badge/CVE_RESEARCH-COORDINATED_DISCLOSURE-e11d48?style=for-the-badge&labelColor=04070f" alt="CVE Research, Coordinated Disclosure"/>
-<img src="https://komarev.com/ghpvc/?username=OpenSource-For-Freedom&color=1f6feb&style=for-the-badge&label=PROFILE+VIEWS&labelColor=04070f" alt="profile views"/>
 
 </div>
 
